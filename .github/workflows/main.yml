@@ -18,6 +18,8 @@ on:
       - '.github/workflows/*.yml'
       - 'pom.xml'
 
+      
+
 jobs:
   misc:
     name: General tests
