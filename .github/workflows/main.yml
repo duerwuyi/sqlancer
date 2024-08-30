@@ -3,10 +3,10 @@ name: ci
 on:
   push:
     branches:
-      - master
+      - citus-fix3
   pull_request:
     branches:
-      - master
+      - citus-fix3
 
 jobs:
   misc:
