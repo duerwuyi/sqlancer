@@ -780,14 +780,15 @@ public final class Main {
                 long currentNrDbs = nrDatabases.get();
                 long nrCurrentDbs = currentNrDbs - lastNrDbs;
                 double throughputDbs = nrCurrentDbs / (elapsedTimeMillis / 1000d);
+                long nrSuccessful = nrSuccessfulActions.get();
+                long nrUnsuccessful = nrUnsuccessfulActions.get();
                 long successfulStatementsRatio = (long) (100.0 * nrSuccessfulActions.get()
                         / (nrSuccessfulActions.get() + nrUnsuccessfulActions.get()));
                 DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                 Date date = new Date();
                 System.out.println(String.format(
-                        "[%s] Executed %d queries (%d queries/s; %.2f/s dbs, successful statements: %2d%%). Threads shut down: %d.",
-                        dateFormat.format(date), currentNrQueries, (int) throughput, throughputDbs,
-                        successfulStatementsRatio, threadsShutdown.get()));
+                        "[%s] Executed %d queries (%d queries/s; %.2f/s dbs, success = %d,unsuccess = %d, successful statements: %2d%%). Threads shut down: %d.",
+                        dateFormat.format(date), currentNrQueries, (int) throughput, throughputDbs, nrSuccessful, nrUnsuccessful, successfulStatementsRatio, threadsShutdown.get()));
                 timeMillis = System.currentTimeMillis();
                 lastNrQueries = currentNrQueries;
                 lastNrDbs = currentNrDbs;
