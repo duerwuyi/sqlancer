@@ -96,7 +96,7 @@ public class CitusProvider extends PostgresProvider {
             sb.append("SET CONSTRAINTS ALL ");
             sb.append(Randomly.fromOptions("DEFERRED", "IMMEDIATE"));
             return new SQLQueryAdapter(sb.toString());
-        }), //
+        }); //
         // RESET_ROLE((g) -> new SQLQueryAdapter("RESET ROLE")), //
         // COMMENT_ON(PostgresCommentGenerator::generate), //
         // RESET((g) -> new SQLQueryAdapter("RESET ALL") /*
