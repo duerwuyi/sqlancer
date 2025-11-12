@@ -142,7 +142,8 @@ public class PostgresSchema extends AbstractSchema<PostgresGlobalState, Postgres
         case "inet":
             return PostgresDataType.INET;
         default:
-            throw new AssertionError(typeString);
+            // throw new AssertionError(typeString);
+            return PostgresDataType.TEXT;
         }
     }
 
