@@ -1,8 +1,8 @@
 package sqlancer.dbms;
 
 public class TestConfig {
-    public static final String NUM_QUERIES = "1000";
-    public static final String SECONDS = "300";
+    public static final String NUM_QUERIES = "1000000";
+    public static final String SECONDS = "36000";
 
     public static final String CLICKHOUSE_ENV = "CLICKHOUSE_AVAILABLE";
     public static final String CNOSDB_ENV = "CNOSDB_AVAILABLE";
