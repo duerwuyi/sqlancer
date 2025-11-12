@@ -61,6 +61,7 @@ public final class CitusCommon {
         errors.add("invalid sign in external \"numeric\" value");
         errors.add("Foreign keys and AFTER ROW triggers are not supported for columnar tables");
         errors.add(" ");
+        errors.add("cannot define statistics for relation");
 
         // current errors in Citus (to be removed once fixed)
         if (CitusBugs.bug3957) {
