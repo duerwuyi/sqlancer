@@ -56,7 +56,6 @@ public final class Main {
     public static volatile AtomicLong nrUnsuccessfulActions = new AtomicLong();
     public static volatile AtomicLong threadsShutdown = new AtomicLong();
 
-    public static volatile AtomicLong TotalQueries = new AtomicLong();
     public static volatile AtomicLong SuccessfulQueries = new AtomicLong();
     public static volatile AtomicLong UnsuccessfulQueries = new AtomicLong();
     static boolean progressMonitorStarted;
@@ -797,7 +796,7 @@ public final class Main {
                 long successfulQueries = SuccessfulQueries.get();
                 long unsuccessfulQueries = UnsuccessfulQueries.get();
                 System.out.println(String.format(
-                        "    Total SELECT queries: %d, Successful SELECT queries: %d, Unsuccessful SELECT queries: %d, valid rate: %.2f%%",
+                        "Total SELECT queries: %d, Successful SELECT queries: %d, Unsuccessful SELECT queries: %d, valid rate: %.2f%%",
                         totalQueries, successfulQueries, unsuccessfulQueries, 100.0 * successfulQueries / totalQueries));
                 timeMillis = System.currentTimeMillis();
                 lastNrQueries = currentNrQueries;

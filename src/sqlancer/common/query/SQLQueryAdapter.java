@@ -139,7 +139,8 @@ public class SQLQueryAdapter extends Query<SQLConnection> {
 
         String queryToExecute = (fills.length > 0) ? fills[0] : query;
         boolean isSelect = queryToExecute.toUpperCase().startsWith("SELECT");
-        if (isSelect) {
+        long totalQueries = Main.SuccessfulQueries.get() + Main.UnsuccessfulQueries.get();
+        if (isSelect && (totalQueries % 1000 == 0 || totalQueries % 1001 == 0 || totalQueries % 1002 == 0)) {
             System.out.println("Executing SELECT query: " + queryToExecute);
         }
 
