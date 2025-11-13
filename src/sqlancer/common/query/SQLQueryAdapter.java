@@ -124,11 +124,11 @@ public class SQLQueryAdapter extends Query<SQLConnection> {
         throw new AssertionError(query, e);
     }
 
-    public boolean isExpectedErrorMessages(String queryString) {
+    public boolean SingleErrorMessages(String errorString) {
         boolean found = false;
-        found = found || queryString.contains("cast");
-        found = found || queryString.contains("not exist");
-        found = found || queryString.contains("invalid input syntax for type");
+        found = found || errorString.contains("cast");
+        found = found || errorString.contains("not exist");
+        found = found || errorString.contains("invalid input syntax for type");
         return found;
     }
 
@@ -169,7 +169,7 @@ public class SQLQueryAdapter extends Query<SQLConnection> {
             return new SQLancerResultSet(result);
         } catch (Exception e) {
             s.close();
-            if (isSelect && isExpectedErrorMessages(e.getMessage())) {
+            if (isSelect && !SingleErrorMessages(e.getMessage())) {
                 Main.UnsuccessfulQueries.addAndGet(1);
 
                 if(Main.UnsuccessfulQueries.get() % 1000==0){
