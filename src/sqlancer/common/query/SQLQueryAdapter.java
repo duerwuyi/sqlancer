@@ -124,6 +124,14 @@ public class SQLQueryAdapter extends Query<SQLConnection> {
         throw new AssertionError(query, e);
     }
 
+    public boolean isExpectedErrorMessages(String queryString) {
+        boolean found = false;
+        found = found || queryString.contains("cast");
+        found = found || queryString.contains("not exist");
+        found = found || queryString.contains("invalid input syntax for type");
+        return found;
+    }
+
     @Override
     public <G extends GlobalState<?, ?, SQLConnection>> SQLancerResultSet executeAndGet(G globalState, String... fills)
             throws SQLException {
@@ -161,7 +169,7 @@ public class SQLQueryAdapter extends Query<SQLConnection> {
             return new SQLancerResultSet(result);
         } catch (Exception e) {
             s.close();
-            if (isSelect){
+            if (isSelect && isExpectedErrorMessages(e.getMessage())) {
                 Main.UnsuccessfulQueries.addAndGet(1);
 
                 if(Main.UnsuccessfulQueries.get() % 1000==0){
