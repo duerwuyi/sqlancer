@@ -55,6 +55,10 @@ public final class Main {
     public static volatile AtomicLong nrSuccessfulActions = new AtomicLong();
     public static volatile AtomicLong nrUnsuccessfulActions = new AtomicLong();
     public static volatile AtomicLong threadsShutdown = new AtomicLong();
+
+    public static volatile AtomicLong TotalQueries = new AtomicLong();
+    public static volatile AtomicLong SuccessfulQueries = new AtomicLong();
+    public static volatile AtomicLong UnsuccessfulQueries = new AtomicLong();
     static boolean progressMonitorStarted;
 
     static {

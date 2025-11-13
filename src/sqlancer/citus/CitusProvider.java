@@ -18,7 +18,7 @@ import sqlancer.IgnoreMeException;
 import sqlancer.Randomly;
 import sqlancer.SQLConnection;
 import sqlancer.StatementExecutor;
-import sqlancer.citus.gen.CitusAlterTableGenerator;
+// import sqlancer.citus.gen.CitusAlterTableGenerator;
 import sqlancer.citus.gen.CitusCommon;
 import sqlancer.citus.gen.CitusDeleteGenerator;
 import sqlancer.citus.gen.CitusIndexGenerator;
@@ -26,7 +26,7 @@ import sqlancer.citus.gen.CitusInsertGenerator;
 import sqlancer.citus.gen.CitusSetGenerator;
 import sqlancer.citus.gen.CitusTableGenerator;
 import sqlancer.citus.gen.CitusUpdateGenerator;
-import sqlancer.citus.gen.CitusViewGenerator;
+// import sqlancer.citus.gen.CitusViewGenerator;
 import sqlancer.common.DBMSCommon;
 import sqlancer.common.oracle.CompositeTestOracle;
 import sqlancer.common.oracle.TestOracle;
@@ -41,18 +41,18 @@ import sqlancer.postgres.PostgresSchema;
 import sqlancer.postgres.PostgresSchema.PostgresColumn;
 import sqlancer.postgres.PostgresSchema.PostgresTable;
 import sqlancer.postgres.PostgresSchema.PostgresTable.TableType;
-import sqlancer.postgres.gen.PostgresAnalyzeGenerator;
-import sqlancer.postgres.gen.PostgresClusterGenerator;
-import sqlancer.postgres.gen.PostgresCommentGenerator;
-import sqlancer.postgres.gen.PostgresDiscardGenerator;
+// import sqlancer.postgres.gen.PostgresAnalyzeGenerator;
+// import sqlancer.postgres.gen.PostgresClusterGenerator;
+// import sqlancer.postgres.gen.PostgresCommentGenerator;
+// import sqlancer.postgres.gen.PostgresDiscardGenerator;
 import sqlancer.postgres.gen.PostgresDropIndexGenerator;
-import sqlancer.postgres.gen.PostgresNotifyGenerator;
-import sqlancer.postgres.gen.PostgresReindexGenerator;
-import sqlancer.postgres.gen.PostgresSequenceGenerator;
-import sqlancer.postgres.gen.PostgresStatisticsGenerator;
-import sqlancer.postgres.gen.PostgresTransactionGenerator;
-import sqlancer.postgres.gen.PostgresTruncateGenerator;
-import sqlancer.postgres.gen.PostgresVacuumGenerator;
+// import sqlancer.postgres.gen.PostgresNotifyGenerator;
+// import sqlancer.postgres.gen.PostgresReindexGenerator;
+// import sqlancer.postgres.gen.PostgresSequenceGenerator;
+// import sqlancer.postgres.gen.PostgresStatisticsGenerator;
+// import sqlancer.postgres.gen.PostgresTransactionGenerator;
+// import sqlancer.postgres.gen.PostgresTruncateGenerator;
+// import sqlancer.postgres.gen.PostgresVacuumGenerator;
 
 @AutoService(DatabaseProvider.class)
 public class CitusProvider extends PostgresProvider {
@@ -64,31 +64,31 @@ public class CitusProvider extends PostgresProvider {
     }
 
     public enum Action implements AbstractAction<PostgresGlobalState> {
-        ANALYZE(PostgresAnalyzeGenerator::create), //
-        ALTER_TABLE(g -> CitusAlterTableGenerator.create(g.getSchema().getRandomTable(t -> !t.isView()), g,
-                generateOnlyKnown)), //
-        CLUSTER(PostgresClusterGenerator::create), //
-        COMMIT(g -> {
-            SQLQueryAdapter query;
-            if (Randomly.getBoolean()) {
-                query = new SQLQueryAdapter("COMMIT", true);
-            } else if (Randomly.getBoolean()) {
-                query = PostgresTransactionGenerator.executeBegin();
-            } else {
-                query = new SQLQueryAdapter("ROLLBACK", true);
-            }
-            return query;
-        }), //
-        CREATE_STATISTICS(PostgresStatisticsGenerator::insert), //
-        DROP_STATISTICS(PostgresStatisticsGenerator::remove), //
+        // ANALYZE(PostgresAnalyzeGenerator::create), //
+        // ALTER_TABLE(g -> CitusAlterTableGenerator.create(g.getSchema().getRandomTable(t -> !t.isView()), g,
+        //         generateOnlyKnown)), //
+        // CLUSTER(PostgresClusterGenerator::create), //
+        // COMMIT(g -> {
+        //     SQLQueryAdapter query;
+        //     if (Randomly.getBoolean()) {
+        //         query = new SQLQueryAdapter("COMMIT", true);
+        //     } else if (Randomly.getBoolean()) {
+        //         query = PostgresTransactionGenerator.executeBegin();
+        //     } else {
+        //         query = new SQLQueryAdapter("ROLLBACK", true);
+        //     }
+        //     return query;
+        // }), //
+        // CREATE_STATISTICS(PostgresStatisticsGenerator::insert), //
+        // DROP_STATISTICS(PostgresStatisticsGenerator::remove), //
         DELETE(CitusDeleteGenerator::create), //
-        DISCARD(PostgresDiscardGenerator::create), //
+        // DISCARD(PostgresDiscardGenerator::create), //
         DROP_INDEX(PostgresDropIndexGenerator::create), //
         INSERT(CitusInsertGenerator::insert), //
         UPDATE(CitusUpdateGenerator::create), //
-        TRUNCATE(PostgresTruncateGenerator::create), //
-        VACUUM(PostgresVacuumGenerator::create), //
-        REINDEX(PostgresReindexGenerator::create), //
+        // TRUNCATE(PostgresTruncateGenerator::create), //
+        // VACUUM(PostgresVacuumGenerator::create), //
+        // REINDEX(PostgresReindexGenerator::create), //
         SET(CitusSetGenerator::create), //
         CREATE_INDEX(CitusIndexGenerator::generate), //
         SET_CONSTRAINTS((g) -> {
@@ -96,18 +96,18 @@ public class CitusProvider extends PostgresProvider {
             sb.append("SET CONSTRAINTS ALL ");
             sb.append(Randomly.fromOptions("DEFERRED", "IMMEDIATE"));
             return new SQLQueryAdapter(sb.toString());
-        }), //
-        RESET_ROLE((g) -> new SQLQueryAdapter("RESET ROLE")), //
-        COMMENT_ON(PostgresCommentGenerator::generate), //
-        RESET((g) -> new SQLQueryAdapter("RESET ALL") /*
-                                                       * https://www.postgresql.org/docs/devel/sql-reset.html TODO: also
-                                                       * configuration parameter
-                                                       */), //
-        NOTIFY(PostgresNotifyGenerator::createNotify), //
-        LISTEN((g) -> PostgresNotifyGenerator.createListen()), //
-        UNLISTEN((g) -> PostgresNotifyGenerator.createUnlisten()), //
-        CREATE_SEQUENCE(PostgresSequenceGenerator::createSequence), //
-        CREATE_VIEW(CitusViewGenerator::create);
+        }); //
+        // RESET_ROLE((g) -> new SQLQueryAdapter("RESET ROLE")), //
+        // COMMENT_ON(PostgresCommentGenerator::generate), //
+        // RESET((g) -> new SQLQueryAdapter("RESET ALL") /*
+        //                                                * https://www.postgresql.org/docs/devel/sql-reset.html TODO: also
+        //                                                * configuration parameter
+        //                                                */), //
+        // NOTIFY(PostgresNotifyGenerator::createNotify), //
+        // LISTEN((g) -> PostgresNotifyGenerator.createListen()), //
+        // UNLISTEN((g) -> PostgresNotifyGenerator.createUnlisten()), //
+        // CREATE_SEQUENCE(PostgresSequenceGenerator::createSequence), //
+        // CREATE_VIEW(CitusViewGenerator::create);
 
         private final SQLQueryProvider<PostgresGlobalState> sqlQueryProvider;
 
@@ -126,48 +126,48 @@ public class CitusProvider extends PostgresProvider {
         int nrPerformed;
         switch (a) {
         case CREATE_INDEX:
-        case CLUSTER:
+        // case CLUSTER:
             nrPerformed = r.getInteger(0, 3);
             break;
-        case CREATE_STATISTICS:
-            nrPerformed = r.getInteger(0, 5);
-            break;
-        case DISCARD:
+        // case CREATE_STATISTICS:
+        //     nrPerformed = r.getInteger(0, 5);
+        //     break;
+        // case DISCARD:
         case DROP_INDEX:
             nrPerformed = r.getInteger(0, 5);
             break;
-        case COMMIT:
-            nrPerformed = r.getInteger(0, 0);
-            break;
-        case ALTER_TABLE:
-            nrPerformed = r.getInteger(0, 5);
-            break;
-        case REINDEX:
-        case RESET:
-            nrPerformed = r.getInteger(0, 3);
-            break;
+        // case COMMIT:
+        //     nrPerformed = r.getInteger(0, 0);
+        //     break;
+        // case ALTER_TABLE:
+        //     nrPerformed = r.getInteger(0, 5);
+        //     break;
+        // case REINDEX:
+        // case RESET:
+        //     nrPerformed = r.getInteger(0, 3);
+        //     break;
         case DELETE:
-        case RESET_ROLE:
+        // case RESET_ROLE:
         case SET:
             nrPerformed = r.getInteger(0, 5);
             break;
-        case ANALYZE:
-            nrPerformed = r.getInteger(0, 3);
-            break;
-        case VACUUM:
+        // case ANALYZE:
+        //     nrPerformed = r.getInteger(0, 3);
+        //     break;
+        // case VACUUM:
         case SET_CONSTRAINTS:
-        case COMMENT_ON:
-        case NOTIFY:
-        case LISTEN:
-        case UNLISTEN:
-        case CREATE_SEQUENCE:
-        case DROP_STATISTICS:
-        case TRUNCATE:
+        // case COMMENT_ON:
+        // case NOTIFY:
+        // case LISTEN:
+        // case UNLISTEN:
+        // case CREATE_SEQUENCE:
+        // case DROP_STATISTICS:
+        // case TRUNCATE:
             nrPerformed = r.getInteger(0, 2);
             break;
-        case CREATE_VIEW:
-            nrPerformed = r.getInteger(0, 2);
-            break;
+        // case CREATE_VIEW:
+        //     nrPerformed = r.getInteger(0, 2);
+        //     break;
         case UPDATE:
             nrPerformed = r.getInteger(0, 10);
             break;
