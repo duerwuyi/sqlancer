@@ -136,12 +136,22 @@ public class SQLQueryAdapter extends Query<SQLConnection> {
         } else {
             s = globalState.getConnection().createStatement();
         }
+
+        String queryToExecute = (fills.length > 0) ? fills[0] : query;
+        boolean isSelect = queryToExecute.toUpperCase().startsWith("SELECT");
+        if (isSelect) {
+            System.out.println("Executing SELECT query: " + queryToExecute);
+        }
+
         ResultSet result;
         try {
             if (fills.length > 0) {
                 result = ((PreparedStatement) s).executeQuery();
             } else {
                 result = s.executeQuery(query);
+            }
+            if (isSelect){
+                Main.SuccessfulQueries.addAndGet(1);
             }
             Main.nrSuccessfulActions.addAndGet(1);
             if (result == null) {
@@ -150,6 +160,9 @@ public class SQLQueryAdapter extends Query<SQLConnection> {
             return new SQLancerResultSet(result);
         } catch (Exception e) {
             s.close();
+            if (isSelect){
+                Main.UnsuccessfulQueries.addAndGet(1);
+            }
             Main.nrUnsuccessfulActions.addAndGet(1);
             checkException(e);
         }

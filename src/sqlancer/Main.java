@@ -793,6 +793,12 @@ public final class Main {
                 System.out.println(String.format(
                         "[%s] Executed %d queries (%d queries/s; %.2f/s dbs, success = %d,unsuccess = %d, successful statements: %2d%%). Threads shut down: %d.",
                         dateFormat.format(date), currentNrQueries, (int) throughput, throughputDbs, nrSuccessful, nrUnsuccessful, successfulStatementsRatio, threadsShutdown.get()));
+                long totalQueries = SuccessfulQueries.get()+ UnsuccessfulQueries.get();
+                long successfulQueries = SuccessfulQueries.get();
+                long unsuccessfulQueries = UnsuccessfulQueries.get();
+                System.out.println(String.format(
+                        "    Total SELECT queries: %d, Successful SELECT queries: %d, Unsuccessful SELECT queries: %d, valid rate: %.2f%%",
+                        totalQueries, successfulQueries, unsuccessfulQueries, 100.0 * successfulQueries / totalQueries));
                 timeMillis = System.currentTimeMillis();
                 lastNrQueries = currentNrQueries;
                 lastNrDbs = currentNrDbs;
