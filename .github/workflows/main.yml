@@ -108,121 +108,75 @@ jobs:
           POSTGRES_AVAILABLE=true mvn -Dtest=TestPostgresTLP test
           POSTGRES_AVAILABLE=true mvn -Dtest=TestPostgresNoREC test
           POSTGRES_AVAILABLE=true mvn -Dtest=TestPostgresCERT test
-  # citus2:
-  #   name: DBMS Tests (Citus)2
-  #   runs-on: ubuntu-22.04
-  #   timeout-minutes: 355
-  #   strategy:
-  #     fail-fast: false
-  #     matrix:
-  #       slice: [1, 2, 3, 4]   # 4 个 slice ≈ 24h 总预算
-  #   steps:
-  #     - uses: actions/checkout@v3
-  #       with:
-  #         fetch-depth: 0
+  clickhouse:
+    name: DBMS Tests (ClickHouse)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        slice: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-  #     - name: Set up JDK 11
-  #       uses: actions/setup-java@v3
-  #       with:
-  #         distribution: 'temurin'
-  #         java-version: '11'
-  #         cache: 'maven'
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: 'maven'
 
-  #     - name: Build SQLancer
-  #       run: mvn -B package -DskipTests=true
+      - name: Build SQLancer
+        run: mvn -B package -DskipTests=true
 
-  #     - name: Set up Citus
-  #       run: |
-  #         sudo apt-get update
-  #         curl https://install.citusdata.com/community/deb.sh | sudo bash
-  #         sudo apt-get -y install postgresql-17-citus-13.0
-  #         sudo chown -R $USER:$USER /var/run/postgresql
-  #         export PATH=/usr/lib/postgresql/17/bin:$PATH
-  #         cd ~
-  #         mkdir -p citus/coordinator citus/worker1 citus/worker2
-  #         initdb -D citus/coordinator
-  #         initdb -D citus/worker1
-  #         initdb -D citus/worker2
-  #         echo "shared_preload_libraries = 'citus'" >> citus/coordinator/postgresql.conf
-  #         echo "shared_preload_libraries = 'citus'" >> citus/worker1/postgresql.conf
-  #         echo "shared_preload_libraries = 'citus'" >> citus/worker2/postgresql.conf
-  #         pg_ctl -D citus/coordinator -o "-p 9700" -l coordinator_logfile start
-  #         pg_ctl -D citus/worker1 -o "-p 9701" -l worker1_logfile start
-  #         pg_ctl -D citus/worker2 -o "-p 9702" -l worker2_logfile start
-  #         psql -c "CREATE ROLE sqlancer SUPERUSER LOGIN CREATEDB PASSWORD 'sqlancer';" -p 9700 -d postgres -U $USER
-  #         createdb test -p 9700 -U $USER
-  #         psql -c "CREATE ROLE sqlancer SUPERUSER LOGIN CREATEDB PASSWORD 'sqlancer';" -p 9701 -d postgres -U $USER
-  #         createdb test -p 9701 -U $USER
-  #         psql -c "CREATE ROLE sqlancer SUPERUSER LOGIN CREATEDB PASSWORD 'sqlancer';" -p 9702 -d postgres -U $USER
-  #         createdb test -p 9702 -U $USER
-  #         psql -c "CREATE EXTENSION citus;" -p 9700 -U $USER -d test
-  #         psql -c "CREATE EXTENSION citus;" -p 9701 -U $USER -d test
-  #         psql -c "CREATE EXTENSION citus;" -p 9702 -U $USER -d test
-  #         psql -c "SELECT * from citus_add_node('localhost', 9701);" -p 9700 -U $USER -d test
-  #         psql -c "SELECT * from citus_add_node('localhost', 9702);" -p 9700 -U $USER -d test
+      - name: Set up ClickHouse
+        run: |
+          docker pull clickhouse/clickhouse-server:24.3.1.2672
+          docker run --ulimit nofile=262144:262144 --name clickhouse-server -p8123:8123 -d clickhouse/clickhouse-server:24.3.1.2672
+          sleep 5
 
-  #     - name: Run SQLancer (slice ~5h50m) and report bugs immediately
-  #       env:
-  #         SLICE_SECONDS: "21000"       # 5h50m，给 job 收尾留余量
-  #         MAX_BUGS: "1000000"          # 找到很多个 bug 才退出
-  #       run: |
-  #         set -euo pipefail
+      - name: Run Tests
+        run: CLICKHOUSE_AVAILABLE=true mvn -Dtest=ClickHouseBinaryComparisonOperationTest,TestClickHouse,ClickHouseOperatorsVisitorTest,ClickHouseToStringVisitorTest test
 
-  #         JAR="$(ls -1 target/sqlancer-*.jar | head -n 1)"
-  #         echo "Using JAR: $JAR"
+      - name: Show fatal errors
+        run: docker exec clickhouse-server grep Fatal /var/log/clickhouse-server/clickhouse-server.log || echo No Fatal Errors found
 
-  #         mkdir -p target/logs
-  #         SEEN_LIST="$RUNNER_TEMP/seen_bugs.txt"
-  #         : > "$SEEN_LIST"
+      - name: Teardown ClickHouse server
+        run: |
+          docker stop clickhouse-server
+          docker rm clickhouse-server
+  tidb:
+    name: DBMS Tests (TiDB)
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        slice: [1, 2, 3, 4]
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
 
-  #         # 直接跑 SQLancer（不要走 JUnit），输出保存到文件，同时在 Actions log 里可见
-  #         java -jar "$JAR" \
-  #           --timeout-seconds "$SLICE_SECONDS" \
-  #           --num-tries "$MAX_BUGS" \
-  #           citus \
-  #           --host localhost --port 9700 --username sqlancer --password sqlancer --database test \
-  #           2>&1 | tee "sqlancer_citus_slice${{ matrix.slice }}.out" &
-  #         PID=$!
+      - name: Set up JDK 11
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '11'
+          cache: 'maven'
 
-  #         # 轮询：一旦发现新的 bug 复现 .log（非 *-cur.log），立刻打点并输出末尾内容
-  #         while kill -0 "$PID" 2>/dev/null; do
-  #           for f in target/logs/*.log; do
-  #             [ -e "$f" ] || continue
-  #             case "$f" in
-  #               *-cur.log) continue ;;
-  #             esac
-  #             if ! grep -Fxq "$f" "$SEEN_LIST"; then
-  #               echo "$f" >> "$SEEN_LIST"
-  #               echo "[$(date -u +%FT%TZ)] FOUND BUG LOG: $f"
-  #               echo "----- tail(120) of $f -----"
-  #               tail -n 120 "$f" || true
-  #               echo "--------------------------------"
-  #             fi
-  #           done
-  #           sleep 10
-  #         done
+      - name: Build SQLancer
+        run: mvn -B package -DskipTests=true
 
-  #         # 不因为退出码让 job 失败；你要的是“跑起来并汇总结果”
-  #         wait "$PID" || true
+      - name: Set up TiDB
+        run: |
+          docker pull hawkingrei/tidb-playground:nightly-2025-09-16
+          docker run --name tidb-server -d -p 4000:4000 hawkingrei/tidb-playground:nightly-2025-09-16
+          sleep 10
 
-  #         echo "Slice finished at $(date -u +%FT%TZ)"
-  #         echo "Bug logs:"
-  #         ls -lah target/logs || true
+      - name: Create SQLancer user
+        run: sudo mysql -h 127.0.0.1 -P 4000 -u root -D test -e "CREATE USER 'sqlancer'@'%' IDENTIFIED WITH mysql_native_password BY 'sqlancer'; GRANT ALL PRIVILEGES ON *.* TO 'sqlancer'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES;"
 
-  #         {
-  #           echo "### Citus slice ${{ matrix.slice }} summary"
-  #           echo "- Finished: $(date -u +%FT%TZ)"
-  #           echo "- Bug logs (reproducers):"
-  #           find target/logs -maxdepth 1 -type f -name "*.log" ! -name "*-cur.log" -print || true
-  #           echo ""
-  #           echo "Last progress lines:"
-  #           tail -n 30 "sqlancer_citus_slice${{ matrix.slice }}.out" || true
-  #         } >> "$GITHUB_STEP_SUMMARY"
-
-  #     - name: Upload logs as artifact
-  #       uses: actions/upload-artifact@v4
-  #       with:
-  #         name: citus-logs-slice-${{ matrix.slice }}
-  #         path: |
-  #           target/logs/
-  #           sqlancer_citus_slice${{ matrix.slice }}.out
+      - name: Run Tests
+        run: |
+          TIDB_AVAILABLE=true mvn -Dtest=TestTiDBTLP test
