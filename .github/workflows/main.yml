@@ -170,8 +170,8 @@ jobs:
 
       - name: Set up TiDB
         run: |
-          docker pull hawkingrei/tidb-playground:nightly-2025-09-16
-          docker run --name tidb-server -d -p 4000:4000 hawkingrei/tidb-playground:nightly-2025-09-16
+          docker pull hawkingrei/tidb-playground:v8.5.4-with-tiflash
+          docker run --name tidb-server -d -p 4000:4000 hawkingrei/tidb-playground:v8.5.4-with-tiflash
           sleep 60
 
       - name: Create SQLancer user
