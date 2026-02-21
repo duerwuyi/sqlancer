@@ -251,6 +251,7 @@ public class TiDBSchema extends AbstractSchema<TiDBGlobalState, TiDBTable> {
                 primitiveType = TiDBDataType.INT;
                 size = 1;
                 break;
+            case "int":
             case "tinyint":
             case "tinyint(2)":
             case "tinyint(3)":
