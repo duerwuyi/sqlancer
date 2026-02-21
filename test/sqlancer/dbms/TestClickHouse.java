@@ -9,11 +9,17 @@ import sqlancer.Main;
 
 public class TestClickHouse {
 
+    public String getSeed(){
+        String seed = System.getenv("RANDOM_SEED");
+        assumeTrue(seed != null && !seed.isBlank(), "RANDOM_SEED must be set");
+        return seed;
+    }
+
     @Test
     public void testClickHouseTLPWhereGroupBy() {
         assumeTrue(TestConfig.isEnvironmentTrue(TestConfig.CLICKHOUSE_ENV));
         assertEquals(0,
-                Main.executeMain("--timeout-seconds", "1460", "--num-queries", TestConfig.NUM_QUERIES, "--num-threads",
+                Main.executeMain("--random-seed", getSeed(), "--timeout-seconds", "1460", "--num-queries", TestConfig.NUM_QUERIES, "--num-threads",
                         "5", "--username", "default", "--password", "", "--database-prefix", "T1_", "clickhouse",
                         "--oracle", "TLPWhere", "--oracle", "TLPGroupBy"));
     }
@@ -22,7 +28,7 @@ public class TestClickHouse {
     public void testClickHouseTLPWhere() {
         assumeTrue(TestConfig.isEnvironmentTrue(TestConfig.CLICKHOUSE_ENV));
         assertEquals(0,
-                Main.executeMain("--timeout-seconds", "1460", "--num-queries", TestConfig.NUM_QUERIES, "--num-threads",
+                Main.executeMain("--random-seed", getSeed(), "--timeout-seconds", "1460", "--num-queries", TestConfig.NUM_QUERIES, "--num-threads",
                         "5", "--username", "default", "--password", "", "--database-prefix", "T2_", "clickhouse",
                         "--oracle", "TLPWhere"));
     }
@@ -31,7 +37,7 @@ public class TestClickHouse {
     public void testClickHouseTLPHaving() {
         assumeTrue(TestConfig.isEnvironmentTrue(TestConfig.CLICKHOUSE_ENV));
         assertEquals(0,
-                Main.executeMain("--log-each-select", "true", "--print-failed", "false", "--timeout-seconds", "1460",
+                Main.executeMain("--random-seed", getSeed(), "--log-each-select", "true", "--print-failed", "false", "--timeout-seconds", "1460",
                         "--num-queries", TestConfig.NUM_QUERIES, "--num-threads", "1", "--username", "default",
                         "--password", "", "--database-prefix", "T3_", "clickhouse", "--oracle", "TLPHaving"));
     }
@@ -40,7 +46,7 @@ public class TestClickHouse {
     public void testClickHouseTLPGroupBy() {
         assumeTrue(TestConfig.isEnvironmentTrue(TestConfig.CLICKHOUSE_ENV));
         assertEquals(0,
-                Main.executeMain("--log-each-select", "true", "--print-failed", "false", "--timeout-seconds", "1460",
+                Main.executeMain("--random-seed", getSeed(), "--log-each-select", "true", "--print-failed", "false", "--timeout-seconds", "1460",
                         "--num-queries", TestConfig.NUM_QUERIES, "--num-threads", "5", "--username", "default",
                         "--password", "", "--database-prefix", "T4_", "clickhouse", "--oracle", "TLPGroupBy"));
     }
@@ -49,7 +55,7 @@ public class TestClickHouse {
     public void testClickHouseTLPDistinct() {
         assumeTrue(TestConfig.isEnvironmentTrue(TestConfig.CLICKHOUSE_ENV));
         assertEquals(0,
-                Main.executeMain("--log-each-select", "true", "--print-failed", "false", "--timeout-seconds", "1460",
+                Main.executeMain("--random-seed", getSeed(), "--log-each-select", "true", "--print-failed", "false", "--timeout-seconds", "1460",
                         "--num-queries", TestConfig.NUM_QUERIES, "--num-threads", "5", "--username", "default",
                         "--password", "", "--database-prefix", "T5_", "clickhouse", "--oracle", "TLPDistinct"));
     }
@@ -58,7 +64,7 @@ public class TestClickHouse {
     public void testClickHouseTLPAggregate() {
         assumeTrue(TestConfig.isEnvironmentTrue(TestConfig.CLICKHOUSE_ENV));
         assertEquals(0,
-                Main.executeMain("--log-each-select", "true", "--print-failed", "false", "--timeout-seconds", "1460",
+                Main.executeMain("--random-seed", getSeed(), "--log-each-select", "true", "--print-failed", "false", "--timeout-seconds", "1460",
                         "--num-queries", TestConfig.NUM_QUERIES, "--num-threads", "5", "--username", "default",
                         "--password", "", "--database-prefix", "T6_", "clickhouse", "--oracle", "TLPAggregate"));
     }
@@ -67,7 +73,7 @@ public class TestClickHouse {
     public void testClickHouseNoREC() {
         assumeTrue(TestConfig.isEnvironmentTrue(TestConfig.CLICKHOUSE_ENV));
         assertEquals(0,
-                Main.executeMain("--log-each-select", "true", "--print-failed", "false", "--timeout-seconds", "1460",
+                Main.executeMain("--random-seed", getSeed(), "--log-each-select", "true", "--print-failed", "false", "--timeout-seconds", "1460",
                         "--num-queries", TestConfig.NUM_QUERIES, "--num-threads", "1", "--username", "default",
                         "--password", "", "--database-prefix", "T7_", "clickhouse", "--oracle", "NoREC"));
     }
@@ -76,7 +82,7 @@ public class TestClickHouse {
     public void testClickHouseTLPWhereGroupByWithJoins() {
         assumeTrue(TestConfig.isEnvironmentTrue(TestConfig.CLICKHOUSE_ENV));
         assertEquals(0,
-                Main.executeMain("--timeout-seconds", "1460", "--num-queries", TestConfig.NUM_QUERIES, "--num-threads",
+                Main.executeMain("--random-seed", getSeed(), "--timeout-seconds", "1460", "--num-queries", TestConfig.NUM_QUERIES, "--num-threads",
                         "5", "--username", "default", "--password", "", "--database-prefix", "T8_", "clickhouse",
                         "--oracle", "TLPWhere", "--oracle", "TLPGroupBy"));
     }
@@ -85,7 +91,7 @@ public class TestClickHouse {
     public void testClickHouseTLPWhereWithJoins() {
         assumeTrue(TestConfig.isEnvironmentTrue(TestConfig.CLICKHOUSE_ENV));
         assertEquals(0,
-                Main.executeMain("--timeout-seconds", "1460", "--num-queries", TestConfig.NUM_QUERIES, "--num-threads",
+                Main.executeMain("--random-seed", getSeed(), "--timeout-seconds", "1460", "--num-queries", TestConfig.NUM_QUERIES, "--num-threads",
                         "5", "--username", "default", "--password", "", "--database-prefix", "T9_", "clickhouse",
                         "--oracle", "TLPWhere"));
     }
@@ -94,7 +100,7 @@ public class TestClickHouse {
     public void testClickHouseTLPHavingWithJoins() {
         assumeTrue(TestConfig.isEnvironmentTrue(TestConfig.CLICKHOUSE_ENV));
         assertEquals(0,
-                Main.executeMain("--log-each-select", "true", "--print-failed", "false", "--timeout-seconds", "1460",
+                Main.executeMain("--random-seed", getSeed(), "--log-each-select", "true", "--print-failed", "false", "--timeout-seconds", "1460",
                         "--num-queries", TestConfig.NUM_QUERIES, "--num-threads", "1", "--username", "default",
                         "--password", "", "--database-prefix", "T10_", "clickhouse", "--oracle", "TLPHaving"));
     }
@@ -103,7 +109,7 @@ public class TestClickHouse {
     public void testClickHouseTLPGroupByWithJoins() {
         assumeTrue(TestConfig.isEnvironmentTrue(TestConfig.CLICKHOUSE_ENV));
         assertEquals(0,
-                Main.executeMain("--log-each-select", "true", "--print-failed", "false", "--timeout-seconds", "1460",
+                Main.executeMain("--random-seed", getSeed(), "--log-each-select", "true", "--print-failed", "false", "--timeout-seconds", "1460",
                         "--num-queries", TestConfig.NUM_QUERIES, "--num-threads", "5", "--username", "default",
                         "--password", "", "--database-prefix", "T11_", "clickhouse", "--oracle", "TLPGroupBy"));
     }
@@ -112,7 +118,7 @@ public class TestClickHouse {
     public void testClickHouseTLPDistinctWithJoins() {
         assumeTrue(TestConfig.isEnvironmentTrue(TestConfig.CLICKHOUSE_ENV));
         assertEquals(0,
-                Main.executeMain("--log-each-select", "true", "--print-failed", "false", "--timeout-seconds", "1460",
+                Main.executeMain("--random-seed", getSeed(), "--log-each-select", "true", "--print-failed", "false", "--timeout-seconds", "1460",
                         "--num-queries", TestConfig.NUM_QUERIES, "--num-threads", "5", "--username", "default",
                         "--password", "", "--database-prefix", "T12_", "clickhouse", "--oracle", "TLPDistinct"));
     }
@@ -121,7 +127,7 @@ public class TestClickHouse {
     public void testClickHouseTLPAggregateWithJoins() {
         assumeTrue(TestConfig.isEnvironmentTrue(TestConfig.CLICKHOUSE_ENV));
         assertEquals(0,
-                Main.executeMain("--log-each-select", "true", "--print-failed", "false", "--timeout-seconds", "1460",
+                Main.executeMain("--random-seed", getSeed(), "--log-each-select", "true", "--print-failed", "false", "--timeout-seconds", "1460",
                         "--num-queries", TestConfig.NUM_QUERIES, "--num-threads", "5", "--username", "default",
                         "--password", "", "--database-prefix", "T13_", "clickhouse", "--oracle", "TLPAggregate"));
     }
@@ -130,7 +136,7 @@ public class TestClickHouse {
     public void testClickHouseNoRECWithJoins() {
         assumeTrue(TestConfig.isEnvironmentTrue(TestConfig.CLICKHOUSE_ENV));
         assertEquals(0,
-                Main.executeMain("--log-each-select", "true", "--print-failed", "false", "--timeout-seconds", "1460",
+                Main.executeMain("--random-seed", getSeed(), "--log-each-select", "true", "--print-failed", "false", "--timeout-seconds", "1460",
                         "--num-queries", TestConfig.NUM_QUERIES, "--num-threads", "1", "--username", "default",
                         "--password", "", "--database-prefix", "T14_", "clickhouse", "--oracle", "NoREC"));
     }

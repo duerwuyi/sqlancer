@@ -14,8 +14,10 @@ public class TestCitus {
         String citusAvailable = System.getenv("CITUS_AVAILABLE");
         boolean citusIsAvailable = citusAvailable != null && citusAvailable.equalsIgnoreCase("true");
         assumeTrue(citusIsAvailable);
+        String seed = System.getenv("RANDOM_SEED");
+        assumeTrue(seed != null && !seed.isBlank(), "RANDOM_SEED must be set");
         assertEquals(0,
-                Main.executeMain(new String[] { "--random-seed", "0", "--timeout-seconds", TestConfig.SECONDS,
+                Main.executeMain(new String[] { "--random-seed", seed, "--timeout-seconds", TestConfig.SECONDS,
                         "--num-threads", "4", "--num-queries", TestConfig.NUM_QUERIES, "citus", "--connection-url",
                         "postgresql://localhost:9700/test", "--test-collations", "false" }));
     }
