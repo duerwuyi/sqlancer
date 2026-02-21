@@ -13,7 +13,7 @@ public class TestTiDBTLP {
     public void testTLP() {
         assumeTrue(TestConfig.isEnvironmentTrue(TestConfig.TIDB_ENV));
         assertEquals(0, Main.executeMain(new String[] { "--random-seed", "0", "--timeout-seconds", TestConfig.SECONDS,
-                "--num-queries", "TestConfig.NUM_QUERIES", "tidb" }));
+                "--num-queries", TestConfig.NUM_QUERIES, "tidb" }));
     }
 
 }
