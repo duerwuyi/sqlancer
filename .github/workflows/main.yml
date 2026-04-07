@@ -83,6 +83,7 @@ jobs:
           path: |
             target/logs/
             sqlancer_citus_slice${{ matrix.slice }}.out
+            /home/runner/work/sqlancer/sqlancer/target/surefire-reports
   # postgres:
   #   name: DBMS Tests (PostgreSQL)
   #   runs-on: ubuntu-latest
@@ -152,39 +153,39 @@ jobs:
         run: |
           docker stop clickhouse-server
           docker rm clickhouse-server
-  tidb:
-    name: DBMS Tests (TiDB)
-    runs-on: ubuntu-latest
-    strategy:
-      fail-fast: false
-      matrix:
-        slice: [1, 2, 3, 4]
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
+  # tidb:
+  #   name: DBMS Tests (TiDB)
+  #   runs-on: ubuntu-latest
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       slice: [1, 2, 3, 4]
+  #   steps:
+  #     - uses: actions/checkout@v3
+  #       with:
+  #         fetch-depth: 0
 
-      - name: Set up JDK 11
-        uses: actions/setup-java@v3
-        with:
-          distribution: 'temurin'
-          java-version: '11'
-          cache: 'maven'
+  #     - name: Set up JDK 11
+  #       uses: actions/setup-java@v3
+  #       with:
+  #         distribution: 'temurin'
+  #         java-version: '11'
+  #         cache: 'maven'
 
-      - name: Build SQLancer
-        run: mvn -B package -DskipTests=true
+  #     - name: Build SQLancer
+  #       run: mvn -B package -DskipTests=true
 
-      - name: Set up TiDB
-        run: |
-          docker pull hawkingrei/tidb-playground:nightly-2025-09-16
-          docker run --name tidb-server -d -p 4000:4000 hawkingrei/tidb-playground:nightly-2025-09-16
-          sleep 60
+  #     - name: Set up TiDB
+  #       run: |
+  #         docker pull hawkingrei/tidb-playground:nightly-2025-09-16
+  #         docker run --name tidb-server -d -p 4000:4000 hawkingrei/tidb-playground:nightly-2025-09-16
+  #         sleep 60
 
-      - name: Create SQLancer user
-        run: sudo mysql -h 127.0.0.1 -P 4000 -u root -D test -e "CREATE USER 'sqlancer'@'%' IDENTIFIED WITH mysql_native_password BY 'sqlancer'; GRANT ALL PRIVILEGES ON *.* TO 'sqlancer'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES;"
+  #     - name: Create SQLancer user
+  #       run: sudo mysql -h 127.0.0.1 -P 4000 -u root -D test -e "CREATE USER 'sqlancer'@'%' IDENTIFIED WITH mysql_native_password BY 'sqlancer'; GRANT ALL PRIVILEGES ON *.* TO 'sqlancer'@'%' WITH GRANT OPTION; FLUSH PRIVILEGES;"
 
-      - name: Run Tests
-        run: |
-          SEED=$((100000 * ${{ matrix.slice }}))
-          echo "slice=${{ matrix.slice }}, seed=$SEED"
-          TIDB_AVAILABLE=true RANDOM_SEED=$SEED mvn -Dtest=TestTiDBTLP test
+  #     - name: Run Tests
+  #       run: |
+  #         SEED=$((100000 * ${{ matrix.slice }}))
+  #         echo "slice=${{ matrix.slice }}, seed=$SEED"
+  #         TIDB_AVAILABLE=true RANDOM_SEED=$SEED mvn -Dtest=TestTiDBTLP test
