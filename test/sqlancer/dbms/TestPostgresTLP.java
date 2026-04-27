@@ -13,8 +13,8 @@ public class TestPostgresTLP {
     public void testTLP() {
         assumeTrue(TestConfig.isEnvironmentTrue(TestConfig.POSTGRES_ENV));
         assertEquals(0,
-                Main.executeMain(new String[] { "--random-seed", "0", "--timeout-seconds", TestConfig.SECONDS,
-                        "--num-threads", "4", "--num-queries", TestConfig.NUM_QUERIES, "postgres", "--test-collations",
-                        "false" }));
+                Main.executeMain(new String[] { "--random-seed", TestConfig.getRandomSeed(2), "--timeout-seconds",
+                        TestConfig.getTimeoutSeconds(), "--num-threads", "4", "--num-queries",
+                        TestConfig.getNumQueries(), "postgres", "--test-collations", "false" }));
     }
 }

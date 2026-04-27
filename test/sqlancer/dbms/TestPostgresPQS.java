@@ -13,9 +13,10 @@ public class TestPostgresPQS {
     public void testPQS() {
         assumeTrue(TestConfig.isEnvironmentTrue(TestConfig.POSTGRES_ENV));
         assertEquals(0,
-                Main.executeMain(new String[] { "--random-seed", "0", "--timeout-seconds", TestConfig.SECONDS,
-                        "--num-threads", "4", "--num-queries", TestConfig.NUM_QUERIES, "--random-string-generation",
-                        "ALPHANUMERIC_SPECIALCHAR", "postgres", "--test-collations", "false", "--oracle", "pqs" }));
+                Main.executeMain(new String[] { "--random-seed", TestConfig.getRandomSeed(1), "--timeout-seconds",
+                        TestConfig.getTimeoutSeconds(), "--num-threads", "4", "--num-queries",
+                        TestConfig.getNumQueries(), "--random-string-generation", "ALPHANUMERIC_SPECIALCHAR",
+                        "postgres", "--test-collations", "false", "--oracle", "pqs" }));
     }
 
 }

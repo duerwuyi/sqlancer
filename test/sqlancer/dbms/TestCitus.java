@@ -15,9 +15,10 @@ public class TestCitus {
         boolean citusIsAvailable = citusAvailable != null && citusAvailable.equalsIgnoreCase("true");
         assumeTrue(citusIsAvailable);
         assertEquals(0,
-                Main.executeMain(new String[] { "--random-seed", "0", "--timeout-seconds", TestConfig.SECONDS,
-                        "--num-threads", "4", "--num-queries", TestConfig.NUM_QUERIES, "citus", "--connection-url",
-                        "postgresql://localhost:9700/test", "--test-collations", "false" }));
+                Main.executeMain(new String[] { "--random-seed", TestConfig.getRandomSeed(), "--timeout-seconds",
+                        TestConfig.getTimeoutSeconds(), "--num-threads", "4", "--num-queries",
+                        TestConfig.getNumQueries(), "citus", "--connection-url", "postgresql://localhost:9700/test",
+                        "--test-collations", "false" }));
     }
 
 }
