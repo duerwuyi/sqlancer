@@ -32,7 +32,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        slice: [1, 2, 3, 4]
+        include:
+          - slice: 1
+            seed: "100000"
+          - slice: 2
+            seed: "200000"
+          - slice: 3
+            seed: "300000"
+          - slice: 4
+            seed: "400000"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -79,7 +87,7 @@ jobs:
       - name: Run Citus long slice
         env:
           CITUS_AVAILABLE: "true"
-          SQLANCER_RANDOM_SEED: ${{ 100000 * matrix.slice }}
+          SQLANCER_RANDOM_SEED: ${{ matrix.seed }}
           SQLANCER_TIMEOUT_SECONDS: "21000"
         run: mvn -B -Djacoco.skip=true -Dtest=TestCitus test
       - name: Upload artifacts
@@ -98,7 +106,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        slice: [1, 2, 3, 4]
+        include:
+          - slice: 1
+            seed: "100000"
+          - slice: 2
+            seed: "200000"
+          - slice: 3
+            seed: "300000"
+          - slice: 4
+            seed: "400000"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -121,25 +137,25 @@ jobs:
       - name: Run PostgreSQL PQS
         env:
           POSTGRES_AVAILABLE: "true"
-          SQLANCER_RANDOM_SEED: ${{ 100000 * matrix.slice }}
+          SQLANCER_RANDOM_SEED: ${{ matrix.seed }}
           SQLANCER_TIMEOUT_SECONDS: "5250"
         run: mvn -B -Djacoco.skip=true -Dtest=TestPostgresPQS test
       - name: Run PostgreSQL TLP
         env:
           POSTGRES_AVAILABLE: "true"
-          SQLANCER_RANDOM_SEED: ${{ 100000 * matrix.slice }}
+          SQLANCER_RANDOM_SEED: ${{ matrix.seed }}
           SQLANCER_TIMEOUT_SECONDS: "5250"
         run: mvn -B -Djacoco.skip=true -Dtest=TestPostgresTLP test
       - name: Run PostgreSQL NoREC
         env:
           POSTGRES_AVAILABLE: "true"
-          SQLANCER_RANDOM_SEED: ${{ 100000 * matrix.slice }}
+          SQLANCER_RANDOM_SEED: ${{ matrix.seed }}
           SQLANCER_TIMEOUT_SECONDS: "5250"
         run: mvn -B -Djacoco.skip=true -Dtest=TestPostgresNoREC test
       - name: Run PostgreSQL CERT
         env:
           POSTGRES_AVAILABLE: "true"
-          SQLANCER_RANDOM_SEED: ${{ 100000 * matrix.slice }}
+          SQLANCER_RANDOM_SEED: ${{ matrix.seed }}
           SQLANCER_TIMEOUT_SECONDS: "5250"
         run: mvn -B -Djacoco.skip=true -Dtest=TestPostgresCERT test
       - name: Upload artifacts
@@ -158,7 +174,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        slice: [1, 2, 3, 4]
+        include:
+          - slice: 1
+            seed: "100000"
+          - slice: 2
+            seed: "200000"
+          - slice: 3
+            seed: "300000"
+          - slice: 4
+            seed: "400000"
     steps:
       - uses: actions/checkout@v4
         with:
@@ -179,7 +203,7 @@ jobs:
       - name: Run ClickHouse long slice
         env:
           CLICKHOUSE_AVAILABLE: "true"
-          SQLANCER_RANDOM_SEED: ${{ 100000 * matrix.slice }}
+          SQLANCER_RANDOM_SEED: ${{ matrix.seed }}
           SQLANCER_TIMEOUT_SECONDS: "21000"
         run: mvn -B -Djacoco.skip=true -Dtest=TestClickHouse test
       - name: Show fatal errors
